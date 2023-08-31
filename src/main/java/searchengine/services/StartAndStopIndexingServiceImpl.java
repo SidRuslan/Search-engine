@@ -99,7 +99,9 @@ public class StartAndStopIndexingServiceImpl implements StartAndStopIndexingServ
             siteRepository.save(site);
         } catch (Exception ex) {
             site.setStatus(IndexingStatus.FAILED);
-            site.setLastError(ex.getMessage().replaceAll("[a-zA-Z.:]", "").trim());
+            if(ex.getMessage() != null) {
+                site.setLastError(ex.getMessage().replaceAll("[a-zA-Z.:]", "").trim());
+            }
             siteRepository.save(site);
         }
 

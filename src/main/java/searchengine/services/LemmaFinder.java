@@ -21,7 +21,7 @@ public class LemmaFinder {
     private static final String unnecessaryPartsOfSpeech = "[а-яА-Я]+\\|[nolp]\\s[ПРЕДЛМЖСОЮЗЧАТ]+";
 
 
-    public HashMap<String, Integer> getLemmasCollection(String text) throws IOException {
+    public HashMap<String, Integer> getLemmasCollection(String text){
 
         HashMap<String, Integer> lemmas = new HashMap<>();
         if(text.isEmpty()) {

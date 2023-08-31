@@ -43,7 +43,6 @@ public class SearchServiceImpl implements SearchService{
 
     @Override
     public SearchResponse search(String query, String siteUrl) {
-        try {
             if (query.isEmpty()) {
                 return createSearchResponse(new ArrayList<>(), false);
             }
@@ -63,10 +62,6 @@ public class SearchServiceImpl implements SearchService{
             List<Lemma> sortedLemmasList = getSortedLemmaList(siteUrl, lemmas);
             List<Page> pageList = findPagesWithLemmas(sortedLemmasList);
             return createSearchResponse(createSearchQueryResult(pageList, sortedLemmasList), true);
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
 
