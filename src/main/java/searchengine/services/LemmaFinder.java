@@ -27,18 +27,15 @@ public class LemmaFinder {
         if(text.isEmpty()) {
             return lemmas;
         }
-
         List<String> words = divisionOfTextIntoWords(removeTagsFromText(text));
         for (String word : words) {
             if (word.isBlank() || !isCorrectWordForm(word)) {
                 continue;
             }
-
             List<String> normalForms = luceneMorph.getNormalForms(word);
             if (normalForms.isEmpty()) {
                 continue;
             }
-
             String normalWord = normalForms.get(0);
             if (lemmas.containsKey(normalWord)) {
                 lemmas.put(normalWord, lemmas.get(normalWord) + 1);

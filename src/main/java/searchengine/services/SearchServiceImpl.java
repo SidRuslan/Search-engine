@@ -28,7 +28,6 @@ import java.util.*;
 public class SearchServiceImpl implements SearchService{
 
     private static final int maxNumberOfPages = 50;
-
     private final SitesList sitesList;
 
     @Autowired
@@ -48,7 +47,6 @@ public class SearchServiceImpl implements SearchService{
             }
             LemmaFinder lemmaFinder = new LemmaFinder();
             List<String> lemmas = lemmaFinder.getLemmasCollection(query).keySet().stream().toList();
-
             if(siteUrl == null) {
                 List<Lemma> sortedLemmasList = new ArrayList<>();
                 List<Page> pageList = new ArrayList<>();
@@ -66,7 +64,6 @@ public class SearchServiceImpl implements SearchService{
 
 
     private List<Lemma> getSortedLemmaList (String siteUrl, List<String> lemmas) {
-
         List<Lemma> sortedLemmasList = new ArrayList<>();
         for (String lemma : lemmas) {
             Site site = siteRepository.findByUrl(siteUrl);
@@ -76,12 +73,10 @@ public class SearchServiceImpl implements SearchService{
             }
         }
         sortedLemmasList.sort(Comparator.comparingInt(Lemma::getFrequency));
-
         if (sortedLemmasList.size() < lemmas.size()) {
             sortedLemmasList.clear();
             return sortedLemmasList;
         }
-
         return sortedLemmasList;
     }
 
@@ -106,26 +101,21 @@ public class SearchServiceImpl implements SearchService{
 
 
     private List<SearchQueryResult> createSearchQueryResult (List<Page> pageList, List<Lemma> sortedLemmasList) {
-
         float maxRelevance = getMaxRelevance(pageList, sortedLemmasList);
         List<SearchQueryResult> queryResultsList = new ArrayList<>();
-
         for (Page page : pageList) {
             SearchQueryResult searchQueryResult = new SearchQueryResult();
             String url = page.getSite().getUrl();
             Document doc = Jsoup.parse(page.getContent());
-
             searchQueryResult.setSite(url.substring(0, url.length() - 1));
             searchQueryResult.setSiteName(page.getSite().getName());
             searchQueryResult.setUri(page.getPath());
             searchQueryResult.setTitle(doc.title());
             searchQueryResult.setSnippet(createSnippet(sortedLemmasList, doc));
             searchQueryResult.setRelevance(calculateRelevance(page,maxRelevance, sortedLemmasList));
-
             queryResultsList.add(searchQueryResult);
         }
         queryResultsList.sort(Comparator.comparingDouble(SearchQueryResult ::getRelevance).reversed());
-
         return queryResultsList;
     }
 
@@ -133,7 +123,6 @@ public class SearchServiceImpl implements SearchService{
     private float calculateRelevance(Page page, float maxRelevance, List<Lemma> sortedLemmasList) {
 
         float absLemmaRelevance = 0;
-
         for (Lemma lemma : sortedLemmasList) {
             IndexModel indexModel = indexModelRepository.findByLemma_idAndPage_Id(lemma.getId(), page.getId());
             if (indexModel == null) {
@@ -149,7 +138,6 @@ public class SearchServiceImpl implements SearchService{
 
         float absLemmaRelevance = 0;
         float maxRelevance = 0;
-
         for (Page page : pageList) {
             for (Lemma lemma : sortedLemmasList) {
                 IndexModel indexModel = indexModelRepository.findByLemma_idAndPage_Id(lemma.getId(), page.getId());
@@ -188,7 +176,6 @@ public class SearchServiceImpl implements SearchService{
         Map<String, String> contentWordsWithLemmas = getContentWordsWithLemmas(contentWords);
         Map<String, Integer> oneIndexOfEachLemma = new TreeMap<>();
         List<Integer> allIndexesLemmas = new ArrayList<>();
-
         for (Lemma lemma : sortedLemmasList) {
             for (Map.Entry<String, String> WordWithLemma : contentWordsWithLemmas.entrySet()) {
                 if (!WordWithLemma.getValue().equals(lemma.getLemma())) {

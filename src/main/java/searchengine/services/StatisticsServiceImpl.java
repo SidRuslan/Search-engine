@@ -30,22 +30,17 @@ public class StatisticsServiceImpl implements StatisticsService {
         TotalStatistics total = new TotalStatistics();
         total.setSites(sites.getSites().size());
         total.setIndexing(true);
-
         List<DetailedStatisticsItem> detailed = new ArrayList<>();
         List<Site> siteList = siteRepository.findAll();
-
         for (Site site : siteList) {
             total.setPages(total.getPages() + site.getPageList().size());
             total.setLemmas(total.getLemmas() + site.getLemmaList().size());
-
             DetailedStatisticsItem statisticsItem = getDetailedStatisticsItem(site);
             detailed.add(statisticsItem);
         }
-
         StatisticsData data = new StatisticsData();
         data.setTotal(total);
         data.setDetailed(detailed);
-
         StatisticsResponse response = new StatisticsResponse();
         response.setStatistics(data);
         response.setResult(true);
@@ -53,11 +48,9 @@ public class StatisticsServiceImpl implements StatisticsService {
     }
 
     private DetailedStatisticsItem getDetailedStatisticsItem (Site site) {
-
         DetailedStatisticsItem item = new DetailedStatisticsItem();
         ZonedDateTime zdt = ZonedDateTime.of(site.getStatusTime(), ZoneId.systemDefault());
         long date = zdt.toInstant().toEpochMilli();
-
         item.setName(site.getName());
         item.setUrl(site.getUrl());
         item.setPages(site.getPageList().size());
@@ -65,7 +58,6 @@ public class StatisticsServiceImpl implements StatisticsService {
         item.setStatus(site.getStatus().name());
         item.setError(site.getLastError());
         item.setStatusTime(date);
-
         return item;
     }
 }

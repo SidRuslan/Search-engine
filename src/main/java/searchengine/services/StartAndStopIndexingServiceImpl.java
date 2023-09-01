@@ -52,7 +52,6 @@ public class StartAndStopIndexingServiceImpl implements StartAndStopIndexingServ
         }
         startIndexingResponse.setResult(true);
         return startIndexingResponse;
-
     }
 
     @Override
@@ -70,16 +69,13 @@ public class StartAndStopIndexingServiceImpl implements StartAndStopIndexingServ
 
 
     private void createSite(SiteConfig siteConfig) {
-
         deleteSiteByName(siteConfig.getName());
-
         Site site = new Site();
         site.setUrl(siteConfig.getUrl());
         site.setName(siteConfig.getName());
         site.setStatusTime(LocalDateTime.now());
         site.setStatus(IndexingStatus.INDEXING);
         siteRepository.save(site);
-
         createPages(site);
     }
 
@@ -89,11 +85,9 @@ public class StartAndStopIndexingServiceImpl implements StartAndStopIndexingServ
             ParseSite.setPageRepository(pageRepository);
             ParseSite.setLemmaRepository(lemmaRepository);
             ParseSite.setIndexModelRepository(indexModelRepository);
-
             ParseSite parseSite = new ParseSite(site, site.getUrl());
             ParseSite.setIsStoppedIndexing(false);
             forkJoinPool.invoke(parseSite);
-
             site.setStatusTime(LocalDateTime.now());
             site.setStatus(IndexingStatus.INDEXED);
             siteRepository.save(site);
@@ -104,7 +98,6 @@ public class StartAndStopIndexingServiceImpl implements StartAndStopIndexingServ
             }
             siteRepository.save(site);
         }
-
     }
 
 

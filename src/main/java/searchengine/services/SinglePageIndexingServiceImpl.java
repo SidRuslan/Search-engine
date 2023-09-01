@@ -39,7 +39,6 @@ public class SinglePageIndexingServiceImpl implements SinglePageIndexingService 
 
     @Override
     public SinglePageIndexingResponse addOrUpdatePageIndex(String url) {
-
         SinglePageIndexingResponse singlePageIndexingResponse = new SinglePageIndexingResponse();
         Site site = getSite(url);
         if (site == null ) {
@@ -52,7 +51,6 @@ public class SinglePageIndexingServiceImpl implements SinglePageIndexingService 
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
         singlePageIndexingResponse.setResult(true);
         return singlePageIndexingResponse;
     }
@@ -84,12 +82,10 @@ public class SinglePageIndexingServiceImpl implements SinglePageIndexingService 
 
 
     private Page createNewPage (Site site, String url) throws IOException {
-
         Page page = new Page();
         Document document = Jsoup.connect(url).get();
         int lastSymbol = url.indexOf("/", 8);
         String urlWithoutRoot = url.substring(lastSymbol);
-
         Page pageFromDb = pageRepository.findByPath(urlWithoutRoot);
         if(pageFromDb != null) {
             pageRepository.delete(pageFromDb);
@@ -100,16 +96,12 @@ public class SinglePageIndexingServiceImpl implements SinglePageIndexingService 
         page.setContent(document.html());
         pageRepository.save(page);
         return page;
-
     }
 
     private void createLemmasAndIndexes(Site site, Page page) throws IOException {
-
         LemmaFinder lemmaFinder = new LemmaFinder();
         HashMap<String, Integer> lemmas = lemmaFinder.getLemmasCollection(page.getContent());
-
         for (Map.Entry<String, Integer> entry : lemmas.entrySet()) {
-
             IndexModel indexModel = new IndexModel();
             Lemma lemma = new Lemma();
             Lemma lemmaFromDb = lemmaRepository.findByLemmaAndSite_Id(entry.getKey(), site.getId());
@@ -124,7 +116,6 @@ public class SinglePageIndexingServiceImpl implements SinglePageIndexingService 
                 lemmaRepository.save(lemma);
                 indexModel.setLemma(lemma);
             }
-
             indexModel.setPage(page);
             indexModel.setRank(entry.getValue());
             indexModelRepository.save(indexModel);

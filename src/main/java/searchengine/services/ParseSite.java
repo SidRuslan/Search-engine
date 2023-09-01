@@ -71,22 +71,19 @@ public class ParseSite extends RecursiveTask<TreeSet<Page>> {
 
 
     private void createPage(Document document, Site site) throws IOException {
-
         Page page = new Page();
         page.setContent(document.html());
         page.setCode(document.connection().response().statusCode());
         page.setSite(site);
         page.setPath(document.baseUri().replaceAll(site.getUrl(), "/"));
-
         pagesSet.add(page);
         pageRepository.save(page);
-
         site.setStatusTime(LocalDateTime.now());
         createLemmaAndIndex(page, site);
     }
 
 
-    private void createLemmaAndIndex(Page page, Site site) throws IOException {
+    private void createLemmaAndIndex(Page page, Site site) {
         LemmaFinder lemmaFinder = new LemmaFinder();
         HashMap<String, Integer> lemmas = lemmaFinder.getLemmasCollection(page.getContent());
         for (Map.Entry<String, Integer> entry : lemmas.entrySet()) {
