@@ -49,7 +49,8 @@ public class SinglePageIndexingServiceImpl implements SinglePageIndexingService 
             Page page = createNewPage(site, url);
             createLemmasAndIndexes(site, page);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            singlePageIndexingResponse.setResult(false);
+            return singlePageIndexingResponse;
         }
         singlePageIndexingResponse.setResult(true);
         return singlePageIndexingResponse;
